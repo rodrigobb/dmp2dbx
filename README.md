@@ -27,7 +27,7 @@ Arguments:
   source                           file to upload
 
 Options:
-  -c, --configFile[=CONFIGFILE]    Configuration file path [default: "/Users/rodrigo/Sites/dmp2dbx/src/RBBusiness/Dmp2Dbx/Command/../Resources/config/config.json"]
+  -c, --configFile[=CONFIGFILE]    Configuration file path [default: "./src/RBBusiness/Dmp2Dbx/Resources/config/config.json"]
   -t, --accessToken[=ACCESSTOKEN]  Dropbox app access token
       --no-update                  If set, configuration values won't be updated to config file
   -h, --help                       Display this help message
