@@ -1,0 +1,35 @@
+{
+    "name":        "rodrigobb/dmp2dbx",
+    "description": "A simple tool to backup a db dump to Dropbox",
+    "keywords":    ["backup", "dump", "mysql", "dropbox"],
+    "type":        "tool",
+    "license":     "MIT",
+    "authors": [
+        {
+            "name":     "Rodrigo Borrego Bernabé",
+            "homepage": "http://rodri.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "dropbox/dropbox-sdk": "1.1.*",
+        "webmozart/json": "^1.2"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.4",
+        "phpunit/phpunit": "^4.1"
+    },
+    "minimum-stability": "RC",
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": [
+        ],
+        "post-update-cmd": [
+        ]
+    },
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    }
+}
