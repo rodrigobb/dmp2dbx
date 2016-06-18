@@ -2,5 +2,13 @@
   "appInfo":{
     "key":"na3d80k8524unyt",
     "secret":"kmthkhcy74y0cke"
-  }
+  },
+  "db":{
+    "host":"127.0.0.1",
+    "port":null,
+    "name":"<dbname>",
+    "user":"<dbuser>",
+    "password":"<dbpassword>"
+  },
+  "accessToken":"INVALID_TOKEN"
 }
