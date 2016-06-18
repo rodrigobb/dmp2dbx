@@ -5,5 +5,5 @@ require __DIR__.'/vendor/autoload.php';
 
 use RBBusiness\Dmp2Dbx\Dmp2DbxApplication;
 
-$application = new Dmp2DbxApplication();
+$application = new Dmp2DbxApplication("Dump2Dbx", "0.1.20160618");
 $application->run();
