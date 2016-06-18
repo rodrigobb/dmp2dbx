@@ -7,12 +7,12 @@ use Dropbox\Client as DbxClient;
 use Dropbox\WebAuthNoRedirect;
 use Dropbox\WriteMode;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Webmozart\Json\FileNotFoundException;
 use Webmozart\Json\JsonDecoder;
 use Webmozart\Json\JsonEncoder;
 
@@ -37,9 +37,10 @@ class Dmp2DbxCommand extends Command
             ->setDescription('Uploads DB dump file to Dropbox')
             ->addArgument(
                 'source',
-                InputArgument::REQUIRED,
-                'file to upload'
-                // TODO: 'file or folder to upload'
+                InputArgument::OPTIONAL,
+                'file to upload',
+                // TODO: 'file or folder to upload',
+                '/tmp/dbdump.sql'
             )
             ->addOption(
                 'configFile',
@@ -93,12 +94,22 @@ class Dmp2DbxCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $source = $input->getArgument('source');
-        if (!file_exists($source)) {
-            throw new FileNotFoundException();
+        $sourcePath = $input->getArgument('source');
+        $tempDump = !file_exists($sourcePath);
+
+        if ($tempDump) {
+
+            if (!property_exists($this->config, 'db')) {
+                throw new InvalidOptionException("No files to upload nor parameters to dump DB found");
+            }
+
+            $sourcePath = $this->dumpDB($sourcePath);
         }
 
-        $this->uploadSource($source);
+        $this->uploadSource($sourcePath);
+        if ($tempDump && is_file($sourcePath)) {
+            unlink($sourcePath);
+        }
 
         $this->updateConfiguration();
     }
@@ -146,6 +157,25 @@ class Dmp2DbxCommand extends Command
         }
 
         return $this->config->accessToken;
+    }
+
+    protected function dumpDB($destinationPath)
+    {
+        if (!property_exists($this->config, 'db')
+            || !property_exists($this->config->db, 'host')
+            || !property_exists($this->config->db, 'name')
+            || !property_exists($this->config->db, 'user')
+            || !property_exists($this->config->db, 'password')
+        ) {
+            throw new \BadMethodCallException("Missing DB information");
+        }
+
+        exec('mysqldump --user='.$this->config->db->user.
+            ' --password='.$this->config->db->password.
+            ' --host='.$this->config->db->host.
+            ' '.$this->config->db->name.' > ' . $destinationPath);
+
+        return $destinationPath;
     }
 
     protected function uploadSource($sourcePath)
